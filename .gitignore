@@ -1,0 +1,14 @@
+# Build artifacts
+bin/
+obj/
+*.o
+*.out
+*.exe
+
+# Large Data Files
+data/*.dat
+data/*.log
+*.csv
+
+# System files
+.DS_Store
