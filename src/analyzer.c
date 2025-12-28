@@ -2,36 +2,27 @@
 #include <stdlib.h>
 #include "events.h"
 
+/**
+ * Main entry point for the LHC Event Analyzer.
+ * * Reads data from Standard Input, stores it in dynamic memory,
+ * and prints a summary of the loaded events.
+ */
 int main(void) {
 	EventBatch batch;
-	int i;
-	ParticleEvent ev;
 
-	printf("=== LHC EventAnalyzer: Memory Stress Test ===\n");
-
+	/* 1. Initialize the batch structure */
 	batch_init(&batch);
 
-	printf("Adding 50 dummy events to trigger realloc...\n");
+	/*2. Load dataa directly from Standard Input (Pipe )*/
+	fprintf(stderr, "[INFO] Analyzer started. Waiting for data...\n");
+	load_data(stdin, &batch);
 
-	for (i = 0; i < 50; i++) {
-		ev.id = i;
-		ev.energy = i * 1.5;
-		ev.timestamp = 1000 + i;
+	/* 3. Generate report */
+	generate_report(&batch, 500.0);
 
-		if(batch_add(&batch, ev) != 0) {
-			fprintf(stderr, "FATAL: Failed to add event %d\n", i);
-			break;
-		}
-
-		printf("Event %02d added | Count: %d | Capacity: %d\n", i, batch.count, batch.capacity);
-	}
-
-	printf("\n=== Final Report ===\n");
-	printf("Total Events Stored: %d\n", batch.count);
-	printf("Final Memory Capacity: %d\n", batch.capacity);
-
+	/* 4. Cleanup */
 	batch_free(&batch);
-	printf("Memory freed correctly. Test Passed.\n");
+	fprintf(stderr, "[INFO] Memory released. Exiting.\n");
 
 	return 0;
 }
